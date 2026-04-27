@@ -7,6 +7,7 @@ export default function MapPage() {
   const [incidents, setIncidents] = useState([]);
   const [activeFilter, setActiveFilter] = useState('all');
   const [isRecentering, setIsRecentering] = useState(false);
+  const [selectedIncident, setSelectedIncident] = useState(null);
 
   useEffect(() => {
     fetch('/api/request')
@@ -38,7 +39,18 @@ export default function MapPage() {
   });
 
   return (
-    <div className={`map-container ${isRecentering ? 'recenter-animation' : ''}`}>
+    <div className={`map-container ${isRecentering ? 'recenter-animation' : ''}`} onClick={() => setSelectedIncident(null)}>
+      {/* Tactical Layers */}
+      <div className="map-grid-overlay"></div>
+      <div className="radar-sweep"></div>
+      
+      {/* Coordinate Labels */}
+      <div style={{ position: 'absolute', top: '1rem', left: '1rem', zIndex: 10, display: 'flex', gap: '2rem', pointerEvents: 'none' }}>
+        <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em' }}>SEC_001_ALPHA</span>
+        <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em' }}>LAT: 28.6139° N</span>
+        <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em' }}>LONG: 77.2090° E</span>
+      </div>
+
       {/* Background Map Mockup */}
       <div style={{ position: 'relative', width: '100%', height: '100%' }}>
         <Image 
@@ -119,6 +131,15 @@ export default function MapPage() {
         />
       </div>
 
+      {/* Heat Zones (Visualized Crisis Clusters) */}
+      {filteredIncidents.filter(inc => inc.urgency === 'high').map((incident, i) => {
+        const left = 20 + (i * 15) % 60;
+        const top = 30 + (i * 12) % 50;
+        return (
+          <div key={`heat-${i}`} className="heat-zone" style={{ left: `${left}%`, top: `${top}%`, width: '120px', height: '120px', marginLeft: '-60px', marginTop: '-60px' }}></div>
+        );
+      })}
+
       {/* Interactive Markers (Simulated Positions) */}
       {filteredIncidents.map((incident, i) => {
         const left = 20 + (i * 15) % 60;
@@ -127,13 +148,19 @@ export default function MapPage() {
         return (
           <div 
             key={i} 
-            className="map-marker" 
+            className={`map-marker ${selectedIncident && selectedIncident.id === incident.id ? 'active' : ''}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedIncident({...incident, pos: { left, top }});
+            }}
             style={{ 
               left: `${left}%`, 
               top: `${top}%`,
               background: incident.urgency === 'high' ? 'var(--accent-critical)' : 'var(--accent-primary)',
               transform: isRecentering ? 'scale(0)' : 'scale(1)',
-              transition: 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)'
+              transition: 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
+              cursor: 'pointer',
+              zIndex: selectedIncident && selectedIncident.id === incident.id ? 101 : 5
             }}
             title={incident.title}
           >
@@ -141,6 +168,44 @@ export default function MapPage() {
           </div>
         );
       })}
+
+      {/* Target Intel Card */}
+      {selectedIncident && (
+        <div 
+          className="intel-card" 
+          style={{ 
+            left: `${selectedIncident.pos.left}%`, 
+            top: `${selectedIncident.pos.top}%`,
+            transform: 'translate(20px, -50%)',
+            pointerEvents: 'auto'
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+            <span className={`incident-pill ${selectedIncident.urgency === 'high' ? 'pill-critical' : 'pill-warning'}`} style={{ fontSize: '0.65rem' }}>
+              {selectedIncident.urgency.toUpperCase()} PRIORITY
+            </span>
+            <button onClick={() => setSelectedIncident(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', color: 'var(--text-secondary)' }}>✕</button>
+          </div>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.4rem' }}>{selectedIncident.title}</h3>
+          <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>{selectedIncident.location}</p>
+          
+          <div style={{ background: '#f8fafc', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
+              <span style={{ fontSize: '0.65rem', fontWeight: 600 }}>PERSONNEL</span>
+              <span style={{ fontSize: '0.65rem', color: 'var(--accent-primary)', fontWeight: 700 }}>4 ACTIVE</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: '0.65rem', fontWeight: 600 }}>RESOURCES</span>
+              <span style={{ fontSize: '0.65rem', color: 'var(--accent-success)', fontWeight: 700 }}>82% CAPACITY</span>
+            </div>
+          </div>
+          
+          <button className="nav-item active" style={{ width: '100%', marginTop: '1rem', justifyContent: 'center', fontSize: '0.75rem', padding: '0.5rem' }}>
+            Open Telemetry
+          </button>
+        </div>
+      )}
 
       {/* Legend */}
       <div className="map-legend">
