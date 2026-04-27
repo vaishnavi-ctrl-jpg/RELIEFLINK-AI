@@ -51,12 +51,12 @@ export default function VolunteersList() {
 
       <div className="scroll-area" style={{ flex: 1 }}>
         <div style={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', paddingBottom: '1rem' }}>
-          {filteredVolunteers.map(vol => (
+          {filteredVolunteers.map((vol, i) => (
             <div key={vol.id} className="bento-card" style={{ padding: '1.25rem', gap: '1rem' }}>
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                 <div style={{ width: '56px', height: '56px', borderRadius: '12px', background: '#f1f5f9', overflow: 'hidden', border: '1px solid var(--border-subtle)', flexShrink: 0 }}>
                   <img 
-                    src={`/images/voluntreer ${(i % 6) + 1}.jpeg`} 
+                    src={`/images/voluntreer%20${(i % 6) + 1}.jpeg`} 
                     alt="Profile" 
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                   />
