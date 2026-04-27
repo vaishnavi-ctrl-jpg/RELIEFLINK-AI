@@ -1,8 +1,31 @@
-'use client';
-
 import { useState, useEffect } from 'react';
+import { useToast } from '../components/ToastProvider';
+
+const VolunteerSkeleton = () => (
+  <div className="bento-card" style={{ padding: '1.25rem', gap: '1rem' }}>
+    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+      <div className="skeleton" style={{ width: '56px', height: '56px', borderRadius: '12px', flexShrink: 0 }} />
+      <div style={{ flex: 1 }}>
+        <div className="skeleton" style={{ height: '14px', width: '70%', marginBottom: '6px' }} />
+        <div className="skeleton" style={{ height: '10px', width: '40%' }} />
+      </div>
+    </div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', marginTop: '0.5rem' }}>
+      <div className="skeleton" style={{ height: '12px', width: '50%' }} />
+      <div style={{ display: 'flex', gap: '0.4rem' }}>
+        <div className="skeleton" style={{ height: '20px', width: '40px', borderRadius: '6px' }} />
+        <div className="skeleton" style={{ height: '20px', width: '50px', borderRadius: '6px' }} />
+      </div>
+    </div>
+    <div style={{ marginTop: 'auto', paddingTop: '0.75rem', display: 'flex', gap: '0.5rem' }}>
+      <div className="skeleton" style={{ flex: 1, height: '32px', borderRadius: '6px' }} />
+      <div className="skeleton" style={{ flex: 1, height: '32px', borderRadius: '6px' }} />
+    </div>
+  </div>
+);
 
 export default function VolunteersList() {
+  const { showToast } = useToast();
   const [volunteers, setVolunteers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -14,12 +37,14 @@ export default function VolunteersList() {
   const [chatInput, setChatInput] = useState('');
 
   useEffect(() => {
-    // Fetch Volunteers
+    // Fetch Volunteers with artificial delay to show skeletons
     fetch('/api/volunteers')
       .then(res => res.json())
       .then(data => {
-        setVolunteers(data);
-        setLoading(false);
+        setTimeout(() => {
+          setVolunteers(data);
+          setLoading(false);
+        }, 1000);
       })
       .catch(e => {
         console.error(e);
@@ -45,6 +70,7 @@ export default function VolunteersList() {
     }));
     
     setChatInput('');
+    showToast(`Instruction sent to ${selectedVolunteer.name}`, 'info');
     
     // Simulated Response
     setTimeout(() => {
@@ -64,8 +90,6 @@ export default function VolunteersList() {
     vol.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     vol.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
   );
-
-  if (loading) return <div style={{ padding: '2rem' }}>Loading Volunteers...</div>;
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', padding: '1.5rem' }}>
@@ -91,66 +115,72 @@ export default function VolunteersList() {
 
       <div className="scroll-area" style={{ flex: 1 }}>
         <div style={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', paddingBottom: '1rem' }}>
-          {filteredVolunteers.map((vol, i) => (
-            <div key={vol.id} className="bento-card" style={{ padding: '1.25rem', gap: '1rem' }}>
-              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                <div style={{ width: '56px', height: '56px', borderRadius: '12px', background: '#f1f5f9', overflow: 'hidden', border: '1px solid var(--border-subtle)', flexShrink: 0 }}>
-                  <img 
-                    src={`/images/voluntreer%20${(i % 6) + 1}.jpeg`} 
-                    alt="Profile" 
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                  />
+          {loading ? (
+            Array(8).fill(0).map((_, i) => <VolunteerSkeleton key={i} />)
+          ) : (
+            filteredVolunteers.map((vol, i) => (
+              <div key={vol.id} className="bento-card" style={{ padding: '1.25rem', gap: '1rem' }}>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                  <div style={{ width: '56px', height: '56px', borderRadius: '12px', background: '#f1f5f9', overflow: 'hidden', border: '1px solid var(--border-subtle)', flexShrink: 0 }}>
+                    <img 
+                      src={`/images/voluntreer%20${(i % 6) + 1}.jpeg`} 
+                      alt="Profile" 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                    />
+                  </div>
+                  <div style={{ minWidth: 0 }}>
+                    <h3 style={{ fontSize: '0.95rem', fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{vol.name}</h3>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--accent-primary)', fontWeight: 600 }}>Active Responder</p>
+                  </div>
                 </div>
-                <div style={{ minWidth: 0 }}>
-                  <h3 style={{ fontSize: '0.95rem', fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{vol.name}</h3>
-                  <p style={{ fontSize: '0.75rem', color: 'var(--accent-primary)', fontWeight: 600 }}>Active Responder</p>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <span>📍</span> {vol.location}
+                  </p>
+                  <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
+                    {vol.skills.slice(0, 3).map((skill, i) => (
+                      <span key={i} className="badge" style={{ background: '#f0f9ff', color: '#0369a1', fontSize: '0.65rem', border: '1px solid #e0f2fe' }}>{skill}</span>
+                    ))}
+                    {vol.skills.length > 3 && <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', alignSelf: 'center' }}>+{vol.skills.length - 3} more</span>}
+                  </div>
+                </div>
+                
+                <div style={{ marginTop: 'auto', paddingTop: '0.75rem', borderTop: '1px solid var(--border-subtle)', display: 'flex', gap: '0.5rem' }}>
+                  <button 
+                    onClick={() => {
+                      setSelectedVolunteer({ ...vol, imgSrc: `/images/voluntreer%20${(i % 6) + 1}.jpeg` });
+                      setModalView('profile');
+                    }}
+                    style={{ flex: 1, padding: '0.4rem', borderRadius: '6px', border: '1px solid var(--border-subtle)', background: 'white', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}
+                  >
+                    Profile
+                  </button>
+                  <button 
+                     onClick={() => {
+                      setSelectedVolunteer({ ...vol, imgSrc: `/images/voluntreer%20${(i % 6) + 1}.jpeg` });
+                      setModalView('deploy');
+                    }}
+                    style={{ flex: 1, padding: '0.4rem', borderRadius: '6px', border: 'none', background: 'var(--accent-primary)', color: 'white', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}
+                  >
+                    Deploy
+                  </button>
                 </div>
               </div>
-              
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                  <span>📍</span> {vol.location}
-                </p>
-                <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
-                  {vol.skills.slice(0, 3).map((skill, i) => (
-                    <span key={i} className="badge" style={{ background: '#f0f9ff', color: '#0369a1', fontSize: '0.65rem', border: '1px solid #e0f2fe' }}>{skill}</span>
-                  ))}
-                  {vol.skills.length > 3 && <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', alignSelf: 'center' }}>+{vol.skills.length - 3} more</span>}
-                </div>
-              </div>
-              
-              <div style={{ marginTop: 'auto', paddingTop: '0.75rem', borderTop: '1px solid var(--border-subtle)', display: 'flex', gap: '0.5rem' }}>
-                <button 
-                  onClick={() => {
-                    setSelectedVolunteer({ ...vol, imgSrc: `/images/voluntreer%20${(i % 6) + 1}.jpeg` });
-                    setModalView('profile');
-                  }}
-                  style={{ flex: 1, padding: '0.4rem', borderRadius: '6px', border: '1px solid var(--border-subtle)', background: 'white', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}
-                >
-                  Profile
-                </button>
-                <button 
-                   onClick={() => {
-                    setSelectedVolunteer({ ...vol, imgSrc: `/images/voluntreer%20${(i % 6) + 1}.jpeg` });
-                    setModalView('deploy');
-                  }}
-                  style={{ flex: 1, padding: '0.4rem', borderRadius: '6px', border: 'none', background: 'var(--accent-primary)', color: 'white', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}
-                >
-                  Deploy
-                </button>
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
 
       {/* Analytics Footer */}
-      <div style={{ marginTop: '1rem', display: 'flex', gap: '1.5rem', background: '#f8fafc', padding: '0.75rem 1.25rem', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
-        <p style={{ fontSize: '0.8rem' }}><strong>{volunteers.length}</strong> Registered Volunteers</p>
-        <span style={{ color: 'var(--border-subtle)' }}>|</span>
-        <p style={{ fontSize: '0.8rem' }}><strong>{filteredVolunteers.length}</strong> Available in current view</p>
-        <span style={{ color: 'var(--accent-success)', fontSize: '0.8rem', marginLeft: 'auto', fontWeight: 600 }}>● All systems operational</span>
-      </div>
+      {!loading && (
+        <div style={{ marginTop: '1rem', display: 'flex', gap: '1.5rem', background: '#f8fafc', padding: '0.75rem 1.25rem', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
+          <p style={{ fontSize: '0.8rem' }}><strong>{volunteers.length}</strong> Registered Volunteers</p>
+          <span style={{ color: 'var(--border-subtle)' }}>|</span>
+          <p style={{ fontSize: '0.8rem' }}><strong>{filteredVolunteers.length}</strong> Available in current view</p>
+          <span style={{ color: 'var(--accent-success)', fontSize: '0.8rem', marginLeft: 'auto', fontWeight: 600 }}>● All systems operational</span>
+        </div>
+      )}
 
       {/* Volunteer Profile Modal */}
       {selectedVolunteer && (
@@ -244,7 +274,7 @@ export default function VolunteersList() {
                         </div>
                         <button 
                            onClick={() => {
-                             alert(`Deployed ${selectedVolunteer.name} to ${inc.title}`);
+                             showToast(`${selectedVolunteer.name} deployed to ${inc.title}`, 'success');
                              setSelectedVolunteer(null);
                            }}
                           style={{ padding: '0.35rem 0.75rem', background: 'var(--accent-primary)', color: 'white', border: 'none', borderRadius: '6px', fontSize: '0.7rem', fontWeight: 600, cursor: 'pointer' }}>
