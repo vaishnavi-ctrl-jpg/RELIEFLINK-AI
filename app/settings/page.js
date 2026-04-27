@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('profile');
@@ -55,7 +56,14 @@ export default function SettingsPage() {
               <h2 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1.5rem' }}>Admin Profile Information</h2>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '2rem' }}>
                 <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: '#e2e8f0', position: 'relative', overflow: 'hidden' }}>
-                  <img src="/images/adminstrator.jpeg" alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <Image 
+                    src="/images/adminstrator.jpeg" 
+                    alt="Avatar" 
+                    width={80} 
+                    height={80} 
+                    style={{ objectFit: 'cover' }} 
+                    unoptimized
+                  />
                 </div>
                 <button className="nav-item" style={{ border: '1px solid var(--border-subtle)', fontSize: '0.8rem', padding: '0.5rem 1rem' }}>Change Photo</button>
               </div>

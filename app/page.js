@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 export default function Dashboard() {
   const [requests, setRequests] = useState([]);
@@ -64,12 +65,16 @@ export default function Dashboard() {
           <div style={{ padding: '1rem', position: 'absolute', top: 0, left: 0, zIndex: 1, background: 'rgba(255,255,255,0.8)', borderBottomRightRadius: '12px' }}>
             <h3 style={{ fontSize: '0.9rem', fontWeight: 700 }}>Real-time Resource Map</h3>
           </div>
-          <img 
-            src="/map_mockup.png" 
-            alt="Resource Map" 
-            className="map-placeholder" 
-            style={{ filter: 'brightness(1.02)' }} 
-          />
+          <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+            <Image 
+              src="/map_mockup.png" 
+              alt="Resource Map" 
+              fill
+              className="map-placeholder" 
+              style={{ objectFit: 'cover', filter: 'brightness(1.02)' }} 
+              unoptimized
+            />
+          </div>
           <div style={{ position: 'absolute', bottom: '1rem', right: '1rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
             <button className="bento-card" style={{ padding: '0.4rem', borderRadius: '8px', cursor: 'pointer', background: 'white' }}>➕</button>
             <button className="bento-card" style={{ padding: '0.4rem', borderRadius: '8px', cursor: 'pointer', background: 'white' }}>➖</button>

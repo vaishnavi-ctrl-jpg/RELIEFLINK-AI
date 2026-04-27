@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 export default function MapPage() {
   const [incidents, setIncidents] = useState([]);
   const [activeFilter, setActiveFilter] = useState('all');
+  const [isRecentering, setIsRecentering] = useState(false);
 
   useEffect(() => {
     fetch('/api/request')
@@ -13,6 +15,11 @@ export default function MapPage() {
       .catch(e => console.error(e));
   }, []);
 
+  const handleRecenter = () => {
+    setIsRecentering(true);
+    setTimeout(() => setIsRecentering(false), 1000);
+  };
+
   const filters = [
     { id: 'all', label: 'All Markers', icon: '🌐' },
     { id: 'medical', label: 'Medical', icon: '🏥' },
@@ -20,14 +27,28 @@ export default function MapPage() {
     { id: 'shelter', label: 'Shelter', icon: '🏠' },
   ];
 
+  const filteredIncidents = incidents.filter(inc => {
+    if (activeFilter === 'all') return true;
+    // Simulate mapping categories based on keywords for the mockup
+    const title = inc.title.toLowerCase();
+    if (activeFilter === 'medical' && (title.includes('medical') || title.includes('health') || title.includes('injury'))) return true;
+    if (activeFilter === 'supplies' && (title.includes('food') || title.includes('supply') || title.includes('water'))) return true;
+    if (activeFilter === 'shelter' && (title.includes('shelter') || title.includes('house') || title.includes('fire'))) return true;
+    return false;
+  });
+
   return (
-    <div className="map-container">
+    <div className={`map-container ${isRecentering ? 'recenter-animation' : ''}`}>
       {/* Background Map Mockup */}
-      <img 
-        src="/map_mockup.png" 
-        alt="ReliefLink Map" 
-        style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(1.05)' }} 
-      />
+      <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+        <Image 
+          src="/map_mockup.png" 
+          alt="ReliefLink Map" 
+          fill
+          style={{ objectFit: 'cover', filter: 'brightness(1.05)' }} 
+          unoptimized
+        />
+      </div>
 
       {/* Floating Controls */}
       <div className="map-ui-overlay">
@@ -65,6 +86,27 @@ export default function MapPage() {
               High demand predicted in Sector 7
             </div>
           </div>
+          
+          <button 
+            onClick={handleRecenter}
+            style={{ 
+              marginTop: '1rem', 
+              width: '100%', 
+              padding: '0.6rem', 
+              borderRadius: '8px', 
+              border: '1px solid var(--border-subtle)', 
+              background: '#f8fafc', 
+              fontSize: '0.75rem', 
+              fontWeight: 600, 
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem'
+            }}
+          >
+            <span>🎯</span> Recenter View
+          </button>
         </div>
       </div>
 
@@ -78,8 +120,7 @@ export default function MapPage() {
       </div>
 
       {/* Interactive Markers (Simulated Positions) */}
-      {incidents.map((incident, i) => {
-        // Deterministic random-like positions for simulation if not present
+      {filteredIncidents.map((incident, i) => {
         const left = 20 + (i * 15) % 60;
         const top = 30 + (i * 12) % 50;
         
@@ -90,7 +131,9 @@ export default function MapPage() {
             style={{ 
               left: `${left}%`, 
               top: `${top}%`,
-              background: incident.urgency === 'high' ? 'var(--accent-critical)' : 'var(--accent-primary)'
+              background: incident.urgency === 'high' ? 'var(--accent-critical)' : 'var(--accent-primary)',
+              transform: isRecentering ? 'scale(0)' : 'scale(1)',
+              transition: 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)'
             }}
             title={incident.title}
           >
@@ -106,6 +149,17 @@ export default function MapPage() {
         <div className="legend-item"><span className="dot" style={{ background: 'var(--accent-primary)' }}></span> General Support</div>
         <div className="legend-item"><span className="dot" style={{ background: 'var(--accent-success)' }}></span> Resource Center</div>
       </div>
+
+      <style jsx>{`
+        .recenter-animation {
+          animation: map-ping 1s ease-out;
+        }
+        @keyframes map-ping {
+          0% { filter: brightness(1); }
+          50% { filter: brightness(1.2); }
+          100% { filter: brightness(1); }
+        }
+      `}</style>
     </div>
   );
 }

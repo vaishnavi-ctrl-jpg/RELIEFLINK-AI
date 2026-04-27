@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useToast } from '../components/ToastProvider';
+import Image from 'next/image';
 
 const VolunteerSkeleton = () => (
   <div className="bento-card" style={{ padding: '1.25rem', gap: '1rem' }}>
@@ -123,11 +124,14 @@ export default function VolunteersList() {
             filteredVolunteers.map((vol, i) => (
               <div key={vol.id} className="bento-card" style={{ padding: '1.25rem', gap: '1rem' }}>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                  <div style={{ width: '56px', height: '56px', borderRadius: '12px', background: '#f1f5f9', overflow: 'hidden', border: '1px solid var(--border-subtle)', flexShrink: 0 }}>
-                    <img 
-                      src={`/images/voluntreer%20${(i % 6) + 1}.jpeg`} 
+                  <div style={{ width: '56px', height: '56px', borderRadius: '12px', background: '#f1f5f9', overflow: 'hidden', border: '1px solid var(--border-subtle)', flexShrink: 0, position: 'relative' }}>
+                    <Image 
+                      src={`/images/voluntreer ${(i % 6) + 1}.jpeg`} 
                       alt="Profile" 
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                      width={56}
+                      height={56}
+                      style={{ objectFit: 'cover' }}
+                      unoptimized
                     />
                   </div>
                   <div style={{ minWidth: 0 }}>
@@ -151,7 +155,7 @@ export default function VolunteersList() {
                 <div style={{ marginTop: 'auto', paddingTop: '0.75rem', borderTop: '1px solid var(--border-subtle)', display: 'flex', gap: '0.5rem' }}>
                   <button 
                     onClick={() => {
-                      setSelectedVolunteer({ ...vol, imgSrc: `/images/voluntreer%20${(i % 6) + 1}.jpeg` });
+                      setSelectedVolunteer({ ...vol, imgSrc: `/images/voluntreer ${(i % 6) + 1}.jpeg` });
                       setModalView('profile');
                     }}
                     style={{ flex: 1, padding: '0.4rem', borderRadius: '6px', border: '1px solid var(--border-subtle)', background: 'white', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}
@@ -159,8 +163,8 @@ export default function VolunteersList() {
                     Profile
                   </button>
                   <button 
-                     onClick={() => {
-                      setSelectedVolunteer({ ...vol, imgSrc: `/images/voluntreer%20${(i % 6) + 1}.jpeg` });
+                    onClick={() => {
+                      setSelectedVolunteer({ ...vol, imgSrc: `/images/voluntreer ${(i % 6) + 1}.jpeg` });
                       setModalView('deploy');
                     }}
                     style={{ flex: 1, padding: '0.4rem', borderRadius: '6px', border: 'none', background: 'var(--accent-primary)', color: 'white', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}
@@ -203,8 +207,8 @@ export default function VolunteersList() {
               >
                 ✕
               </button>
-              <div style={{ position: 'absolute', bottom: '-40px', left: '2rem', width: '80px', height: '80px', borderRadius: '20px', border: '4px solid white', overflow: 'hidden', boxShadow: 'var(--shadow-lg)', background: '#f1f5f9' }}>
-                <img src={selectedVolunteer.imgSrc} alt="PFP" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <div style={{ position: 'absolute', bottom: '-40px', left: '2rem', width: '80px', height: '80px', borderRadius: '20px', border: '4px solid white', overflow: 'hidden', boxShadow: 'var(--shadow-lg)', background: '#f1f5f9', position: 'relative' }}>
+                <Image src={selectedVolunteer.imgSrc} alt="PFP" width={80} height={80} style={{ objectFit: 'cover' }} unoptimized />
               </div>
               <div style={{ position: 'absolute', bottom: '1rem', right: '1rem', display: 'flex', gap: '0.5rem' }}>
                 <button onClick={() => setModalView('profile')} style={{ padding: '0.4rem 0.8rem', borderRadius: '8px', border: 'none', background: modalView === 'profile' ? 'white' : 'rgba(255,255,255,0.2)', color: modalView === 'profile' ? 'var(--accent-primary)' : 'white', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}>Profile</button>
