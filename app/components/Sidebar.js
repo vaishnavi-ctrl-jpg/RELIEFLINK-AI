@@ -27,22 +27,24 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       {/* Brand area */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1rem', flexShrink: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <div style={{ width: '32px', height: '32px', background: 'var(--accent-primary)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(79, 70, 229, 0.3)' }}>
-            <span style={{ color: 'white', fontWeight: 'bold', fontSize: '1.2rem' }}>R</span>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', marginBottom: '1.5rem', flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', marginBottom: '0.25rem' }}>
+          <div style={{ width: '38px', height: '38px', background: 'linear-gradient(135deg, #4f46e5, #00d4ff)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 16px rgba(79, 70, 229, 0.25)' }}>
+            <span style={{ color: 'white', fontWeight: 900, fontSize: '1.4rem' }}>R</span>
           </div>
-          <h2 style={{ fontSize: '1.2rem', fontWeight: 800, letterSpacing: '-0.02em' }}>ReliefLink <span style={{ color: 'var(--accent-primary)' }}>AI</span></h2>
+          <h2 style={{ fontSize: '1.35rem', fontWeight: 800, letterSpacing: '-0.03em', margin: 0 }}>
+            <span className="brand-gradient">ReliefLink</span> <span style={{ color: 'var(--accent-primary)', opacity: 0.8 }}>AI</span>
+          </h2>
         </div>
         
         {/* System Pulse */}
-        <div className="system-status">
+        <div className="system-status" style={{ marginLeft: '2px' }}>
           <div className="pulse-dot"></div>
           RES_COMMAND: ACTIVE
         </div>
       </div>
 
-      <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', flex: 1 }}>
+      <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
         {navItems.map((item) => (
           <Link 
             key={item.href} 
