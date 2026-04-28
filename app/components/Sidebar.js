@@ -27,7 +27,7 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       {/* Brand area */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', marginBottom: '1.5rem', flexShrink: 0 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', marginBottom: '0.5rem', flexShrink: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', marginBottom: '0.25rem' }}>
           <div style={{ width: '38px', height: '38px', background: 'linear-gradient(135deg, #4f46e5, #00d4ff)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 16px rgba(79, 70, 229, 0.25)' }}>
             <span style={{ color: 'white', fontWeight: 900, fontSize: '1.4rem' }}>R</span>

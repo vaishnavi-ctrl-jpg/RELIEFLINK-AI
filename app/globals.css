@@ -488,7 +488,7 @@ body {
   background: rgba(0, 0, 0, 0.03);
   border-radius: 100px;
   width: fit-content;
-  margin-bottom: 2rem;
+  margin-bottom: 0;
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.05em;

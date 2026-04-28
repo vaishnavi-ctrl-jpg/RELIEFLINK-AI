@@ -54,7 +54,7 @@ export default function Dashboard() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
                 <p style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.2rem' }}>{stat.title}</p>
-                <h2 style={{ fontSize: stat.isAI ? '1rem' : '1.35rem', fontWeight: 800, letterSpacing: '-0.03em', color: stat.isAI ? 'var(--accent-primary)' : 'inherit' }}>{stat.value}</h2>
+                <h2 style={{ fontSize: stat.isAI ? '0.9rem' : '1.15rem', fontWeight: 800, letterSpacing: '-0.03em', color: stat.isAI ? 'var(--accent-primary)' : 'inherit' }}>{stat.value}</h2>
               </div>
               <span className={`incident-pill ${stat.color}`} style={{ fontSize: '0.7rem', padding: '0.25rem 0.6rem' }}>{stat.trend}</span>
             </div>
