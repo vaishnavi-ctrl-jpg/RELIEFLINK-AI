@@ -92,9 +92,9 @@ body {
 }
 
 .top-header {
-  height: 60px;
-  background: var(--bg-sidebar);
-  border-bottom: 1px solid var(--border-subtle);
+  height: 70px;
+  background: transparent;
+  border-bottom: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -127,23 +127,30 @@ body {
 }
 
 .search-bar {
-  background: #f1f5f9;
-  border: none;
-  border-radius: 12px;
-  padding: 0.6rem 1rem;
+  background: white;
+  border: 1px solid var(--border-subtle);
+  border-radius: 99px;
+  padding: 0.6rem 1.25rem;
   width: 400px;
   outline: none;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
+}
+.search-bar:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .incident-pill {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
+  padding: 0.35rem 0.75rem;
   border-radius: 99px;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .pill-critical { background: #fee2e2; color: #dc2626; }

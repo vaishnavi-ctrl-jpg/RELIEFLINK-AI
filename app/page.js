@@ -37,10 +37,10 @@ export default function Dashboard() {
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <div style={{ padding: '1rem 1.5rem 0 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ padding: '0.5rem 1.5rem 1rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <h1 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Active Incident Overview</h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Real-time coordination and AI-driven resource allocation.</p>
+          <h1 style={{ fontSize: '1.25rem', fontWeight: 800, letterSpacing: '-0.02em' }}>Active Incident Overview</h1>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginTop: '0.2rem' }}>Real-time coordination and AI-driven resource allocation.</p>
         </div>
         <div style={{ padding: '0.3rem 0.6rem', background: 'white', borderRadius: '8px', border: '1px solid var(--border-subtle)', fontSize: '0.75rem', fontWeight: 500 }}>
           {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
@@ -54,7 +54,7 @@ export default function Dashboard() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
                 <p style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.2rem' }}>{stat.title}</p>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>{stat.value}</h2>
+                <h2 style={{ fontSize: stat.isAI ? '1rem' : '1.35rem', fontWeight: 800, letterSpacing: '-0.03em', color: stat.isAI ? 'var(--accent-primary)' : 'inherit' }}>{stat.value}</h2>
               </div>
               <span className={`incident-pill ${stat.color}`} style={{ fontSize: '0.7rem', padding: '0.25rem 0.6rem' }}>{stat.trend}</span>
             </div>
