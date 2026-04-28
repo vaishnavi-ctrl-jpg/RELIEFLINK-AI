@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="hero-banner.png" alt="ReliefLink AI" width="800" />
+<img src="dashboard-banner.webp" alt="ReliefLink AI Dashboard" width="800" />
 
 <br/>
 
